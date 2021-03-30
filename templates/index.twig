@@ -56,28 +56,104 @@
     $('input:checkbox').live("click", function(e) {
         parent = this.id;
         if($(this).is(':checked')){
-            if($(this).hasClass("tab")){
-                $.each(itemList, function( key, value ) {
-                    if(value.parent_id == parent){
-                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab2');
+            if(this.value == 'all'){
+                var checkAll = this.name;
+                $('input[type=checkbox]').each(function () {
+                    if(checkAll == this.name){
+                        var openAll = this.id;
+                        var hasAll = 0;
+                        $(this).prop( "checked", true );
+                        
+                    if($(this).hasClass("tab")){
+                        $.each(itemList, function( key, value ) {
+                                if(value.parent_id == openAll){
+                                    hasAll = 1;
+                                addCheckboxBelow(value.id, value.parent_id, value.name, 'tab2');
+                                }
+                        });
+                                if(hasAll == 1){
+                                addCheckboxBelow(null, openAll, 'all', 'tab2');
+                                hasAll = 0;
+                                }
+                    }else if($(this).hasClass("tab2")){
+                        $.each(itemList, function( key, value ) {
+                                if(value.parent_id == openAll){
+                                    hasAll = 1;
+                                addCheckboxBelow(value.id, value.parent_id, value.name, 'tab3');
+                                }
+                        });
+                                if(hasAll == 1){
+                                addCheckboxBelow(null, openAll, 'all', 'tab3');
+                                hasAll = 0;
+                                }
+                    }else{
+                        $.each(itemList, function( key, value ) {
+                                if(value.parent_id == openAll){
+                                    hasAll = 1;
+                                addCheckboxBelow(value.id, value.parent_id, value.name, 'tab');
+                                }
+                        });
+                                if(hasAll == 1){
+                                addCheckboxBelow(null, openAll, 'all', 'tab');
+                                hasAll = 0;
+                                }
                     }
-                });
-            }else if($(this).hasClass("tab2")){
-                $.each(itemList, function( key, value ) {
-                    if(value.parent_id == parent){
-                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab3');
-                    }
-                });
-            }else{
-                $.each(itemList, function( key, value ) {
-                    if(value.parent_id == parent){
-                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab');
                     }
                 });
             }
+            
+            var putAll = 0;
+            if($(this).hasClass("tab")){
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    putAll = 1;
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab2');
+                    }
+                });
+                if(putAll == 1){
+                addCheckboxBelow(null, parent, 'all', 'tab2');
+                putAll = 0;
+                }
+            }else if($(this).hasClass("tab2")){
+                addCheckboxBelow(null, parent, 'all', 'tab3');
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    putAll = 1;
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab3');
+                    }
+                });
+                if(putAll == 1){
+                addCheckboxBelow(null, parent, 'all', 'tab3');
+                putAll = 0;
+                }
+            }else{
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    putAll = 1;
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab');
+                    }
+                });
+                if(putAll == 1){
+                addCheckboxBelow(null, parent, 'all', 'tab');
+                putAll = 0;
+                }
+            }
         }else{
+            if(this.value == 'all'){
+                var checkAll = this.name;
+                $('input[type=checkbox]').each(function () {
+                    if(checkAll == this.name){
+                        var openAll = this.id;
+                        $(this).prop( "checked", false );
+                        $("label[for='"+this.id+"']").find('br').remove();
+                        $("label[for='"+this.id+"']").find('input:checkbox').remove();
+                        $("label[for='"+this.id+"']").find('label').remove();
+                    }
+                });
+            }
             $("label[for='"+parent+"']").find('br').remove();
-            $(this).find('br').remove
+            $("label[for='"+parent+"']").find('input:checkbox').remove();
+            $("label[for='"+parent+"']").find('label').remove();
                 $.each(itemList, function( key, value ) {
                     if(value.parent_id == parent){
                         $('#' + value.id).remove();
