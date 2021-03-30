@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+ .tab { 
+     margin-left: 20px; 
+     }
+ .tab2 { 
+     margin-left: 40px; 
+     }
+ .tab3 { 
+     margin-left: 60px; 
+     }
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
+    <head>
+        <title>Coding Chief</title>
+    </head>
+    <body>
+    <div id="cblist">
+    </div>
+        <ul>
+            {% for item in items %}
+            <input type="hidden" id="{{item.id}}" name="{{item.parent_id}}" value="{{item.name}}">
+            {% endfor %}
+
+        </ul>
+    </body>
+</html>  
+{% block javascript_footer %}
+<script>
+
+    //put data in object for jquery
+    var itemList = [];
+    var id, pid, name, obj;
+    $('input[type=hidden]').each(function () {
+        id = this.id; 
+        pid = this.name; 
+        name = this.value
+        
+        item = new Object();
+        item.id = id;
+        item.parent_id = pid;
+        item.name = name;
+        itemList.push(item);
+    });
+    
+    //set parent checkbox
+    $.each(itemList, function( key, value ) {
+        if(value.parent_id == 0){
+        addCheckbox(value.id, value.parent_id, value.name);
+        }
+    });
+    
+    //create or remove children per click
+    $('input:checkbox').live("click", function(e) {
+        parent = this.id;
+        if($(this).is(':checked')){
+            if($(this).hasClass("tab")){
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab2');
+                    }
+                });
+            }else if($(this).hasClass("tab2")){
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab3');
+                    }
+                });
+            }else{
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                    addCheckboxBelow(value.id, value.parent_id, value.name, 'tab');
+                    }
+                });
+            }
+        }else{
+            $("label[for='"+parent+"']").find('br').remove();
+            $(this).find('br').remove
+                $.each(itemList, function( key, value ) {
+                    if(value.parent_id == parent){
+                        $('#' + value.id).remove();
+                        $("label[for='"+value.id+"']").remove();
+                    }
+                });
+        }
+        });
+
+
+function addCheckbox(id, parentId, name, clas=[]) {
+   var container = $('#cblist');
+   $('<input />', { type: 'checkbox', id: id, value: name, name: parentId, class: clas }).appendTo(container);
+   $('<label />', { 'for': id, text: name, html: name }).appendTo(container);
+   $('<br>').appendTo(container);
+}
+function addCheckboxBelow(id, parentId, name, clas=[]) {
+   $('<br>').appendTo("label[for='"+parentId+"']");
+   $('<input />', { type: 'checkbox', id: id, value: name, name: parentId, class: clas }).appendTo("label[for='"+parentId+"']");
+   $('<label />', { 'for': id, text: name, html: name }).appendTo("label[for='"+parentId+"']");
+}
+</script> 
+{% endblock %}
